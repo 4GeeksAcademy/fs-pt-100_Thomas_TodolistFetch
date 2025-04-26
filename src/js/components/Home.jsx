@@ -50,9 +50,16 @@ const Home = () => {
 		.catch(err => console.log(err))
 	}
 
-	const deleteTodo = (todoIndex) => {
-		const newTodos = data.filter((_, index) => index !== todoIndex);
-		setData(newTodos);
+	const handleDelete = (id) => {
+		fetch('https://playground.4geeks.com/todo/todos/'+id, {
+			method: "DELETE"
+		})
+		.then(resp => {
+			if (!resp.ok) throw new Error(`error code: ${resp.status}`)
+			return true
+		})
+		.then(data => getUserTodos())
+		.catch(err => console.log(err))
 	}
 
 
@@ -71,11 +78,11 @@ const Home = () => {
 			</form>
 			<h6 className="mt-4 text-center">Pending tasks:</h6>
 			<ul className="list-group">
-				{data.map((todoItem, index) => (
+				{data.map((el, index) => (
 					<li key={index} className="list-group-item">
 						<div className="d-flex justify-content-between align-items-center">
-							<p>{todoItem.label}</p>
-							<span className="fas fa-trash" onClick={() => deleteTodo(index)}></span>
+							<p>{el.label}</p>
+							<span className="fas fa-trash" onClick={() => handleDelete(el.id)}></span>
 						</div>
 					</li>
 				))}
